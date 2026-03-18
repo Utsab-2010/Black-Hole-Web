@@ -11,6 +11,7 @@
     <header>
       <h1>⚫ Black Hole</h1>
       <p class="subtitle">Strategic tile-placement against an AI opponent</p>
+      <button id="rulesBtn">📖 Rules</button>
     </header>
 
     <div id="controls">
@@ -49,6 +50,42 @@
         <div id="modalTitle"></div>
         <div id="modalBody"></div>
         <button id="modalBtn">Play Again</button>
+      </div>
+    </div>
+
+    <!-- Rules modal -->
+    <div id="rulesOverlay" style="display:none">
+      <div id="rulesModal">
+        <button id="rulesClose">✕</button>
+        <h2>📖 How to Play Black Hole</h2>
+
+        <h3>🎯 Objective</h3>
+        <p>Place tiles so your <strong>lowest-value</strong> tiles end up closest to the Black Hole.
+           The player whose tiles are worth <em>less</em> near the hole wins.</p>
+
+        <h3>🔄 Turn Order</h3>
+        <ol>
+          <li>Players alternate placing one tile per turn on any empty hex.</li>
+          <li>Tile values increase each round — both players receive tiles <strong>1, 2, 3 … 22</strong> in the same order.</li>
+          <li>After all 44 tiles are placed, the single remaining empty hex becomes the <strong>⚫ Black Hole</strong>.</li>
+        </ol>
+
+        <h3>🌀 Scoring — The Event Horizon</h3>
+        <p>Hexes are scored in <strong>rings</strong> of distance from the Black Hole outward:</p>
+        <ul>
+          <li><strong>Ring 1</strong> — hexes directly adjacent to the Black Hole.</li>
+          <li><strong>Ring 2</strong> — hexes adjacent to Ring 1, and so on.</li>
+        </ul>
+        <p>Compare each player's tile sum in Ring 1. <strong>Lower sum wins immediately.</strong>
+           If tied, move to Ring 2. Continue outward until a winner is found.</p>
+
+        <h3>💡 Strategy Tips</h3>
+        <ul>
+          <li>🟢 <strong>Save your 1s and 2s</strong> — place low tiles near where the Black Hole will form.</li>
+          <li>🔴 <strong>Dump high tiles early (18–22)</strong> — push them to the far edges.</li>
+          <li>⭐ <strong>Ring 1 is decisive</strong> — winning it ends the game immediately in your favour.</li>
+          <li>🤔 <strong>Player 2 has a slight edge (~52%)</strong> — you can react to where P1 plays.</li>
+        </ul>
       </div>
     </div>
   </div>

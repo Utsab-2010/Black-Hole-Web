@@ -23,7 +23,10 @@ const C = {
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 const W = canvas.width, H = canvas.height;
-const HEX_R = 30;   // circle radius
+const HEX_R = 34;   // hexagon outer radius
+const HEX_W = Math.sqrt(3) * HEX_R;
+const X_GAP = 4;
+const Y_GAP = 3;
 
 function hexPositions() {
   const positions = [];
@@ -31,16 +34,28 @@ function hexPositions() {
   const startY = 44;
   for (let r = 0; r < totalRows; r++) {
     const cols = r + 1;
-    const rowW = cols * HEX_R * 2 + (cols - 1) * 4;
-    const startX = (W - rowW) / 2 + HEX_R;
-    const y = startY + r * (HEX_R * 2 + 4);
+    const rowW = cols * HEX_W + (cols - 1) * X_GAP;
+    const startX = (W - rowW) / 2 + HEX_W / 2;
+    const y = startY + r * (1.5 * HEX_R + Y_GAP);
     for (let c = 0; c < cols; c++) {
-      positions.push({ x: startX + c * (HEX_R * 2 + 4), y });
+      positions.push({ x: startX + c * (HEX_W + X_GAP), y });
     }
   }
   return positions;
 }
 const POS = hexPositions();
+
+function drawHexagon(ctx, x, y, r) {
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI / 3) * i - Math.PI / 2;
+    const px = x + r * Math.cos(angle);
+    const py = y + r * Math.sin(angle);
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+}
 
 // ── Game State ─────────────────────────────────────────────────────────────────
 let board = [];   // [{player,value}] length 45
@@ -93,13 +108,12 @@ function render() {
     const isLastEmpty = (cell.player === 0 && emptyCells === 1);
     if (isLastEmpty) fill = C.hole;
 
-    // Circle
-    ctx.beginPath();
-    ctx.arc(x, y, HEX_R, 0, Math.PI * 2);
+    // Hexagon
+    drawHexagon(ctx, x, y, HEX_R);
     ctx.fillStyle = fill;
     ctx.fill();
     ctx.strokeStyle = C.border;
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 2;
     ctx.stroke();
 
     // Label
@@ -181,6 +195,10 @@ async function requestBotMove() {
 
 // ── Move logic ─────────────────────────────────────────────────────────────────
 function applyMove(idx) {
+  if (idx == null || idx < 0 || idx >= NUM_HEXES) {
+    console.error("applyMove called with invalid idx:", idx);
+    return;
+  }
   if (board[idx].player !== 0) return;
   const cp = currentPlayer();
   const tv = currentTileVal();
@@ -284,7 +302,7 @@ canvas.addEventListener("mousemove", e => {
   const my = e.clientY - rect.top;
   let found = -1;
   POS.forEach(({ x, y }, i) => {
-    if (Math.hypot(mx - x, my - y) < HEX_R) found = i;
+    if (Math.hypot(mx - x, my - y) < HEX_R * 0.866) found = i;
   });
   if (found !== hoveredHex) { hoveredHex = found; render(); }
 });
@@ -295,7 +313,7 @@ canvas.addEventListener("click", e => {
   const mx = e.clientX - rect.left;
   const my = e.clientY - rect.top;
   POS.forEach(({ x, y }, i) => {
-    if (Math.hypot(mx - x, my - y) < HEX_R && board[i].player === 0) {
+    if (Math.hypot(mx - x, my - y) < HEX_R * 0.866 && board[i].player === 0) {
       applyMove(i);
       render();
       updateSidebar();
@@ -308,6 +326,13 @@ canvas.addEventListener("click", e => {
 
 document.getElementById("newGameBtn").addEventListener("click", initGame);
 document.getElementById("modalBtn").addEventListener("click", initGame);
+
+document.getElementById("rulesBtn").addEventListener("click", () => {
+  document.getElementById("rulesOverlay").style.display = "flex";
+});
+document.getElementById("rulesClose").addEventListener("click", () => {
+  document.getElementById("rulesOverlay").style.display = "none";
+});
 
 // ── Start ──────────────────────────────────────────────────────────────────────
 initGame();
