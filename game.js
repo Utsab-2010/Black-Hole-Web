@@ -160,11 +160,15 @@ async function requestBotMove() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
+    if (!res.ok) {
+      const txt = await res.text();
+      console.error(`Bot API HTTP ${res.status} — raw response:`, txt.slice(0, 400));
+      throw new Error(`HTTP ${res.status}`);
+    }
     const data = await res.json();
     action = data.action;
   } catch (err) {
-    console.error("Bot API error:", err);
-    // Fallback: pick random valid move
+    console.error("Bot API error — using random fallback:", err.message);
     const valid = board.map((c, i) => c.player === 0 ? i : -1).filter(i => i >= 0);
     action = valid[Math.floor(Math.random() * valid.length)];
   }
