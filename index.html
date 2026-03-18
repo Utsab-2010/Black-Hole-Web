@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Black Hole — AI Board Game</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>⚫ Black Hole</h1>
+      <p class="subtitle">Strategic tile-placement against an AI opponent</p>
+    </header>
+
+    <div id="controls">
+      <label>Play as
+        <select id="playerSelect">
+          <option value="1">Player 1 (Red — moves first)</option>
+          <option value="2">Player 2 (Green — moves second)</option>
+        </select>
+      </label>
+      <label>AI Model
+        <select id="modelSelect">
+          <option value="v2">v2 (stronger)</option>
+          <option value="v1">v1</option>
+        </select>
+      </label>
+      <button id="newGameBtn">New Game</button>
+    </div>
+
+    <div id="gameArea">
+      <canvas id="board" width="720" height="600"></canvas>
+      <div id="sidebar">
+        <div id="status"></div>
+        <div id="tileInfo">
+          <div class="tile-box" id="p1Tile"><span class="label">Your tile</span><span class="val" id="p1TileVal">—</span></div>
+          <div class="tile-box" id="p2Tile"><span class="label">AI tile</span><span class="val" id="p2TileVal">—</span></div>
+        </div>
+        <div id="scoreBox" style="display:none">
+          <h3>Final Scores</h3>
+          <div id="scoreDetail"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="overlay" style="display:none">
+      <div id="modal">
+        <div id="modalTitle"></div>
+        <div id="modalBody"></div>
+        <button id="modalBtn">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
