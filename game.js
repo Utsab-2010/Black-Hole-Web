@@ -1,39 +1,39 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 // Change this to your HuggingFace Space URL after deploying
-const BOT_API_URL = "https://YOUR-USERNAME-YOUR-SPACE.hf.space";
+const BOT_API_URL = "https://festive-neuron-black-hole.hf.space";
 
-const LAYERS       = 9;
-const NUM_HEXES    = 45;   // (9*10)/2
-const TILES_EACH   = 22;   // tiles per player
+const LAYERS = 9;
+const NUM_HEXES = 45;   // (9*10)/2
+const TILES_EACH = 22;   // tiles per player
 
 // ── Colors ─────────────────────────────────────────────────────────────────────
 const C = {
-  bg:     "#0d0f1a",
-  empty:  "#1e2240",
-  hover:  "#2e3660",
-  p1:     "#e05b5b",
-  p2:     "#4caf78",
-  hole:   "#090b14",
+  bg: "#0d0f1a",
+  empty: "#1e2240",
+  hover: "#2e3660",
+  p1: "#e05b5b",
+  p2: "#4caf78",
+  hole: "#090b14",
   border: "#3a4070",
-  text:   "#d8daf0",
-  gold:   "#f0c040",
+  text: "#d8daf0",
+  gold: "#f0c040",
 };
 
 // ── Board geometry ─────────────────────────────────────────────────────────────
-const canvas  = document.getElementById("board");
-const ctx     = canvas.getContext("2d");
+const canvas = document.getElementById("board");
+const ctx = canvas.getContext("2d");
 const W = canvas.width, H = canvas.height;
-const HEX_R   = 30;   // circle radius
+const HEX_R = 30;   // circle radius
 
 function hexPositions() {
   const positions = [];
   const totalRows = LAYERS;
   const startY = 44;
   for (let r = 0; r < totalRows; r++) {
-    const cols   = r + 1;
-    const rowW   = cols * HEX_R * 2 + (cols - 1) * 4;
+    const cols = r + 1;
+    const rowW = cols * HEX_R * 2 + (cols - 1) * 4;
     const startX = (W - rowW) / 2 + HEX_R;
-    const y      = startY + r * (HEX_R * 2 + 4);
+    const y = startY + r * (HEX_R * 2 + 4);
     for (let c = 0; c < cols; c++) {
       positions.push({ x: startX + c * (HEX_R * 2 + 4), y });
     }
@@ -43,26 +43,26 @@ function hexPositions() {
 const POS = hexPositions();
 
 // ── Game State ─────────────────────────────────────────────────────────────────
-let board        = [];   // [{player,value}] length 45
-let tilesPlaced  = 0;
-let humanPlayer  = 1;    // 1 or 2, set by dropdown
-let modelName    = "v2";
-let hoveredHex   = -1;
-let gameOver     = false;
+let board = [];   // [{player,value}] length 45
+let tilesPlaced = 0;
+let humanPlayer = 1;    // 1 or 2, set by dropdown
+let modelName = "v2";
+let hoveredHex = -1;
+let gameOver = false;
 let waitingForBot = false;
 
 function currentPlayer() { return (tilesPlaced % 2 === 0) ? 1 : 2; }
 function currentTileVal() { return Math.floor(tilesPlaced / 2) + 1; }
 
 function initGame() {
-  board        = Array.from({ length: NUM_HEXES }, () => ({ player: 0, value: 0 }));
-  tilesPlaced  = 0;
-  gameOver     = false;
+  board = Array.from({ length: NUM_HEXES }, () => ({ player: 0, value: 0 }));
+  tilesPlaced = 0;
+  gameOver = false;
   waitingForBot = false;
-  humanPlayer  = parseInt(document.getElementById("playerSelect").value);
-  modelName    = document.getElementById("modelSelect").value;
+  humanPlayer = parseInt(document.getElementById("playerSelect").value);
+  modelName = document.getElementById("modelSelect").value;
   document.getElementById("scoreBox").style.display = "none";
-  document.getElementById("overlay").style.display  = "none";
+  document.getElementById("overlay").style.display = "none";
   render();
   updateSidebar();
   // If bot goes first
@@ -125,8 +125,8 @@ function updateSidebar() {
   const cp = currentPlayer();
   const tv = currentTileVal();
   const statusEl = document.getElementById("status");
-  const p1ValEl  = document.getElementById("p1TileVal");
-  const p2ValEl  = document.getElementById("p2TileVal");
+  const p1ValEl = document.getElementById("p1TileVal");
+  const p2ValEl = document.getElementById("p2TileVal");
 
   if (gameOver) return;
 
@@ -134,7 +134,7 @@ function updateSidebar() {
   p2ValEl.textContent = cp === 2 ? tv : "—";
 
   if (cp === humanPlayer) {
-    statusEl.innerHTML = `<b>Your turn</b> — place tile <b style="color:${humanPlayer===1?C.p1:C.p2}">${tv}</b> on any empty hex.`;
+    statusEl.innerHTML = `<b>Your turn</b> — place tile <b style="color:${humanPlayer === 1 ? C.p1 : C.p2}">${tv}</b> on any empty hex.`;
   } else {
     statusEl.innerHTML = waitingForBot
       ? `<b>AI is thinking…</b>`
@@ -155,7 +155,7 @@ async function requestBotMove() {
 
   let action;
   try {
-    const res  = await fetch(`${BOT_API_URL}/api/bot_move`, {
+    const res = await fetch(`${BOT_API_URL}/api/bot_move`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -243,16 +243,16 @@ function scoreBoard() {
 
 // ── Result Modal ───────────────────────────────────────────────────────────────
 function showResult(winner, rings) {
-  const overlay   = document.getElementById("overlay");
-  const title     = document.getElementById("modalTitle");
-  const body      = document.getElementById("modalBody");
-  const scoreBox  = document.getElementById("scoreBox");
+  const overlay = document.getElementById("overlay");
+  const title = document.getElementById("modalTitle");
+  const body = document.getElementById("modalBody");
+  const scoreBox = document.getElementById("scoreBox");
   const scoreDetail = document.getElementById("scoreDetail");
 
   const humanWon = winner === humanPlayer;
-  title.textContent  = winner === 0 ? "Draw!" : humanWon ? "You Win! 🎉" : "AI Wins 🤖";
-  title.style.color  = winner === 0 ? "#aaa" : humanWon ? C.p2 : C.p1;
-  body.textContent   = winner === 0
+  title.textContent = winner === 0 ? "Draw!" : humanWon ? "You Win! 🎉" : "AI Wins 🤖";
+  title.style.color = winner === 0 ? "#aaa" : humanWon ? C.p2 : C.p1;
+  body.textContent = winner === 0
     ? "All rings were tied."
     : humanWon
       ? "Your tiles were closer to the Black Hole."
@@ -262,7 +262,7 @@ function showResult(winner, rings) {
   let detail = "";
   for (const ring of Object.keys(rings).map(Number).sort((a, b) => a - b)) {
     const [p1, p2] = rings[ring];
-    detail += `Ring ${ring}: You ${humanPlayer===1?p1:p2} | AI ${humanPlayer===1?p2:p1}<br>`;
+    detail += `Ring ${ring}: You ${humanPlayer === 1 ? p1 : p2} | AI ${humanPlayer === 1 ? p2 : p1}<br>`;
   }
   scoreDetail.innerHTML = detail;
   scoreBox.style.display = "block";
