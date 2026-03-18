@@ -81,12 +81,6 @@ select {
   padding: 6px 10px; font-size: .9rem; cursor: pointer;
 }
 
-#controls label.checkbox-label {
-  flex-direction: row; align-items: center; gap: 8px;
-  cursor: pointer; user-select: none;
-}
-#controls label.checkbox-label input { cursor: pointer; }
-
 #newGameBtn {
   background: var(--accent);
   color: #fff;
