@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Black Hole — AI Board Game</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <div id="app">
     <header>
@@ -27,6 +29,10 @@
           <option value="v1">v1</option>
         </select>
       </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="stochMode">
+        Stochastic (Top-3)
+      </label>
       <button id="newGameBtn">New Game</button>
     </div>
 
@@ -35,8 +41,10 @@
       <div id="sidebar">
         <div id="status"></div>
         <div id="tileInfo">
-          <div class="tile-box" id="p1Tile"><span class="label">Your tile</span><span class="val" id="p1TileVal">—</span></div>
-          <div class="tile-box" id="p2Tile"><span class="label">AI tile</span><span class="val" id="p2TileVal">—</span></div>
+          <div class="tile-box" id="p1Tile"><span class="label">Your tile</span><span class="val"
+              id="p1TileVal">—</span></div>
+          <div class="tile-box" id="p2Tile"><span class="label">AI tile</span><span class="val" id="p2TileVal">—</span>
+          </div>
         </div>
         <div id="scoreBox" style="display:none">
           <h3>Final Scores</h3>
@@ -61,13 +69,15 @@
 
         <h3>🎯 Objective</h3>
         <p>Place tiles so your <strong>lowest-value</strong> tiles end up closest to the Black Hole.
-           The player whose tiles are worth <em>less</em> near the hole wins.</p>
+          The player whose tiles are worth <em>less</em> near the hole wins.</p>
 
         <h3>🔄 Turn Order</h3>
         <ol>
           <li>Players alternate placing one tile per turn on any empty hex.</li>
-          <li>Tile values increase each round — both players receive tiles <strong>1, 2, 3 … 22</strong> in the same order.</li>
-          <li>After all 44 tiles are placed, the single remaining empty hex becomes the <strong>⚫ Black Hole</strong>.</li>
+          <li>Tile values increase each round — both players receive tiles <strong>1, 2, 3 … 22</strong> in the same
+            order.</li>
+          <li>After all 44 tiles are placed, the single remaining empty hex becomes the <strong>⚫ Black Hole</strong>.
+          </li>
         </ol>
 
         <h3>🌀 Scoring — The Event Horizon</h3>
@@ -77,7 +87,7 @@
           <li><strong>Ring 2</strong> — hexes adjacent to Ring 1, and so on.</li>
         </ul>
         <p>Compare each player's tile sum in Ring 1. <strong>Lower sum wins immediately.</strong>
-           If tied, move to Ring 2. Continue outward until a winner is found.</p>
+          If tied, move to Ring 2. Continue outward until a winner is found.</p>
 
         <h3>💡 Strategy Tips</h3>
         <ul>
@@ -92,4 +102,5 @@
 
   <script src="game.js"></script>
 </body>
+
 </html>
