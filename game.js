@@ -1,6 +1,6 @@
 // ── Config ────────────────────────────────────────────────────────────────────
-// Change this to your Render backend URL after deploying
-const BOT_API_URL = "https://YOUR-RENDER-APP.onrender.com";
+// Change this to your HuggingFace Space URL after deploying
+const BOT_API_URL = "https://YOUR-USERNAME-YOUR-SPACE.hf.space";
 
 const LAYERS       = 9;
 const NUM_HEXES    = 45;   // (9*10)/2
@@ -77,6 +77,7 @@ function render() {
   ctx.fillStyle = C.bg;
   ctx.fillRect(0, 0, W, H);
 
+  const emptyCells = board.filter(c => c.player === 0).length;  // computed once
   POS.forEach(({ x, y }, i) => {
     const cell = board[i];
     let fill;
@@ -88,8 +89,7 @@ function render() {
       fill = C.p2;
     }
 
-    // Check if this will be the black hole (only 1 empty left)
-    const emptyCells = board.filter(c => c.player === 0).length;
+    // Highlight the last empty hex as the Black Hole
     const isLastEmpty = (cell.player === 0 && emptyCells === 1);
     if (isLastEmpty) fill = C.hole;
 
